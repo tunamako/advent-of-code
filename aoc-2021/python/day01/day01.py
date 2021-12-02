@@ -12,16 +12,15 @@ DAY = 1
 
 
 def part_one(_input):
-    return sum(b > a for a, b in zip(_input, _input[1:]))
+    return sum(pair[1] > pair[0] for pair in zip(_input, _input[1:]))
 
 def part_two(_input):
-    _sums = [sum(_input[i:i+3]) for i in range(len(_input) - 2)]
-    return part_one(_sums)
+    return sum(pair[1] > pair[0] for pair in zip(_input, _input[3:]))
 
 if __name__ == '__main__':
     puzzle = Puzzle(year=YEAR, day=DAY)
     _input = list(map(int, puzzle.input_data.split('\n')))
-    #_input = open('bigboy').readlines()
+    #_input = [int(line[:-1]) for line in open('bigboy').readlines()]
 
     print(part_one(_input))
     print(part_two(_input))
