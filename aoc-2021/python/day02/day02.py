@@ -8,15 +8,39 @@ import math
 
 
 YEAR = 2021
-DAY = 1
+DAY = 2
 
 
 def part_one(_input):
-    pass
+    xpos, ypos = 0, 0
 
+    for line in _input:
+        cmd, count = line.split(' ')
+
+        if cmd == "forward":
+            xpos += int(count)
+        elif cmd == "up":
+            ypos -= int(count)
+        elif cmd == "down":
+            ypos += int(count)
+
+    return xpos * ypos
 
 def part_two(_input):
-    pass
+    xpos, ypos, aim = 0, 0, 0
+
+    for line in _input:
+        cmd, count = line.split(' ')
+
+        if cmd == "forward":
+            xpos += int(count)
+            ypos += int(count) * aim
+        elif cmd == "up":
+            aim -= int(count)
+        elif cmd == "down":
+            aim += int(count)
+
+    return xpos * ypos
 
 
 if __name__ == '__main__':
