@@ -28,7 +28,7 @@ def simulate(_input, days):
 
 
 def part_one(_input):
-    return simulate(_input, 18)
+    return simulate(_input, 80)
 
 def part_two(_input):
     return simulate(_input, 256)
@@ -36,7 +36,7 @@ def part_two(_input):
 if __name__ == '__main__':
     puzzle = Puzzle(year=YEAR, day=DAY)
     _input = puzzle.input_data.split('\n')[0]
-    _input = open('input').readlines()[0]
+    #_input = open('input').readlines()[0]
 
     print(part_one(_input))
     print(part_two(_input))
