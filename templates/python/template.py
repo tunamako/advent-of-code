@@ -5,7 +5,8 @@ from collections import defaultdict, namedtuple, Counter, deque
 from itertools import permutations, combinations, chain
 import re
 import math
-
+from pprint import *
+import numpy as np
 
 YEAR = 2021
 DAY = 1
