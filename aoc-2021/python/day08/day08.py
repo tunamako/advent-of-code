@@ -16,10 +16,8 @@ def part_one(_input):
     unique = 0
     for entry in _input:
         output = entry.split(' | ')[1].split(' ')
-        print(output)
         for digit in output:
             if len(digit) in [2, 3, 4, 7]:
-                print(digit)
                 unique += 1
 
     return unique
@@ -108,7 +106,7 @@ if __name__ == '__main__':
     _input = puzzle.input_data.split('\n')
     #_input = [line[:-1] for line in open('input').readlines()]
 
-    #print(part_one(_input))
+    print(part_one(_input))
     print(part_two(_input))
 
     #cProfile.run('print(part_one(_input))')
