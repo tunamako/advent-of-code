@@ -15,21 +15,20 @@ directions = {(-1, 0), (1, 0), (0, 1), (0, -1)}
 
 
 def get_low_points(heatmap):
-    dimx = len(heatmap)
-    dimy = len(heatmap[0])
-
     low_points = []
-    for x in range(dimx):
-        for y in range(dimy):
-            is_low = True
-            for d in directions:
-                i, j = x + d[0], y + d[1]
-                if (dimx > i >= 0 and dimy > j >= 0):
-                    if heatmap[i][j] <= heatmap[x][y]:
-                        is_low = False
+    for pos in zip(*np.where(heatmap != "9")):
+        height = heatmap[pos[0]][pos[1]]
 
-            if is_low:
-                low_points.append(Point(x, y))
+        is_low = True
+        for d in directions:
+            try:
+                if heatmap[pos[0] + d[0]][pos[1] + d[1]] <= height:
+                    is_low = False
+            except:
+                pass
+
+        if is_low:
+            low_points.append(Point(*pos))
 
     return low_points
 
