@@ -29,7 +29,6 @@ if __name__ == '__main__':
     puzzle = Puzzle(year=YEAR, day=DAY)
     _input = puzzle.input_data.split('\n')[0]
     #_input = [line[:-1] for line in open('input').readlines()]
-
     print(part_one(_input))
     print(part_two(_input))
 
