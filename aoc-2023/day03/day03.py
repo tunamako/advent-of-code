@@ -52,7 +52,10 @@ def get_full_number(x, y, grid):
 def find_part_numbers(x, y, grid):
     parts = set()
     for d in directions:
-        adj = grid[x+d[0], y+d[1]]
+        try:
+            adj = grid[x+d[0], y+d[1]]
+        except:
+            continue
         if adj.isnumeric():
             parts.add(get_full_number(x+d[0], y+d[1], grid))
 
