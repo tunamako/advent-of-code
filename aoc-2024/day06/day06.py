@@ -53,21 +53,14 @@ def run_guardbot(grid, start_pos, obstacle=None, return_keys=False):
     
     return set(visited.keys()) if return_keys else len(visited.keys())
 
-def part_one(_input):
-    grid = np.array([list(line) for line in _input])
-    grid = np.swapaxes(grid, 0, 1)
-    start_pos = np.where(np.isin(grid, ['^','>','v','<']) == True)
-    start_pos = Point(int(start_pos[0][0]), int(start_pos[1][0]))
-
-    return run_guardbot(grid, start_pos)
-
-def part_two(_input):
+def solve(_input):
     grid = np.array([list(line) for line in _input])
     grid = np.swapaxes(grid, 0, 1)
     start_pos = np.where(np.isin(grid, ['^','>','v','<']) == True)
     start_pos = Point(int(start_pos[0][0]), int(start_pos[1][0]))
 
     base_path = run_guardbot(grid, start_pos, return_keys=True)
+    print("p1:", len(base_path) + 1)
     base_path.remove(start_pos)
 
     args = [[grid, start_pos, obstacle] for obstacle in base_path]
@@ -75,7 +68,7 @@ def part_two(_input):
     with Pool(pool_size) as p:
         results = p.starmap(run_guardbot, args, 100)
 
-    return results.count(-1)
+    print("p2:", results.count(-1))
 
 if __name__ == '__main__':
     puzzle = Puzzle(year=YEAR, day=DAY)
@@ -83,10 +76,7 @@ if __name__ == '__main__':
     #_input = [line[:-1] for line in open('aoc-2024/day06/input.txt').readlines()]
 
     start = time.perf_counter()
-    print(part_one(_input), time.perf_counter() - start)
-    start = time.perf_counter()
+    solve(_input)    
+    print(time.perf_counter() - start)
 
-    print(part_two(_input), time.perf_counter() - start)
-
-    #cProfile.run('print(part_one(_input))')
-    #cProfile.run('print(part_two(_input))')
+    #cProfile.run('print(solve(_input))')
