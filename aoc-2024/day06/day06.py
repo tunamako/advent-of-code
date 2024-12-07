@@ -9,7 +9,7 @@ from pprint import pprint
 import numpy as np
 import sys
 from copy import deepcopy
-from multiprocess import Process, Pool, Value
+from multiprocessing import Process, Pool, Value
 import time
 
 np.set_printoptions(threshold=sys.maxsize)
@@ -18,36 +18,35 @@ YEAR = 2024
 DAY = 6
 
 Point = namedtuple("Point", ['x', 'y']) 
-
 moves = {
-    '>': Point(1, 0),
-    'v': Point(0, 1),
-    '<': Point(-1, 0),
-    '^': Point(0, -1),
+    '>': (1, 0),
+    'v': (0, 1),
+    '<': (-1, 0),
+    '^': (0, -1),
 }
 
 def run_guardbot(grid, start_pos, obstacle=None, return_keys=False):
+    x, y = start_pos[0], start_pos[1]
     facing = '^'
     facings = cycle(">v<^")
     visited = defaultdict(set)
-    visited[start_pos].add(facing)
+    visited[(x, y)].add(facing)
 
-    guard_pos = start_pos
 
-    while 0 <= guard_pos.x <= len(grid) and 0 <= guard_pos.y <= len(grid[0]):
-        if facing in visited[guard_pos] and len(visited.keys()) > 1:
+    while 0 <= x and 0 <= y:
+        if facing in visited[(x, y)] and len(visited.keys()) > 1:
             return -1
 
-        visited[guard_pos].add(facing)
-        next_pos = Point(guard_pos.x + moves[facing].x, guard_pos.y + moves[facing].y)
+        visited[(x, y)].add(facing)
+        next_x, next_y = x + moves[facing][0], y + moves[facing][1]
 
         try:
-            if grid[next_pos.x][next_pos.y] == '#':
+            if grid[next_x][next_y] == '#':
                 facing = next(facings)
-            elif obstacle and next_pos == obstacle:
+            elif obstacle and next_x == obstacle[0] and next_y == obstacle[1]:
                 facing = next(facings)
             else:
-                guard_pos = next_pos
+                x, y = next_x, next_y
         except IndexError:
             break
     
@@ -57,18 +56,19 @@ def solve(_input):
     grid = np.array([list(line) for line in _input])
     grid = np.swapaxes(grid, 0, 1)
     start_pos = np.where(np.isin(grid, ['^','>','v','<']) == True)
-    start_pos = Point(int(start_pos[0][0]), int(start_pos[1][0]))
+    start_pos = (int(start_pos[0][0]), int(start_pos[1][0]))
 
     base_path = run_guardbot(grid, start_pos, return_keys=True)
     print("p1:", len(base_path) + 1)
     base_path.remove(start_pos)
 
     args = [[grid, start_pos, obstacle] for obstacle in base_path]
-    pool_size = 15
+    pool_size = 16
     with Pool(pool_size) as p:
         results = p.starmap(run_guardbot, args, 100)
 
     print("p2:", results.count(-1))
+    #print("p2:", sum(run_guardbot(grid, start_pos, obstacle) for obstacle in base_path))
 
 if __name__ == '__main__':
     puzzle = Puzzle(year=YEAR, day=DAY)
