@@ -39,28 +39,20 @@ class Computah:
             operand = self.pgm[self.ip+1]
 
             if op == 0:
-                print(self.ip, self.A, self.B, self.C, "adv " + str(self.get_combo(operand)))
                 self.adv(operand)
             elif op == 1:
-                print(self.ip, self.A, self.B, self.C, "bxl " + str(operand))
                 self.bxl(operand)                
             elif op == 2:
-                print(self.ip, self.A, self.B, self.C, "bst " + str(self.get_combo(operand)))
                 self.bst(operand)                
             elif op == 3:
-                print(self.ip, self.A, self.B, self.C, "jnz " + str(operand))
                 self.jnz(operand)                
             elif op == 4:
-                print(self.ip, self.A, self.B, self.C, "bxc " + str(operand))
                 self.bxc(operand)                
             elif op == 5:
-                print(self.ip, self.A, self.B, self.C, "out " + str(self.get_combo(operand)))
                 self.out(operand)                
             elif op == 6:
-                print(self.ip, self.A, self.B, self.C, "bdv " + str(self.get_combo(operand)))
                 self.bdv(operand)                
             elif op == 7:
-                print(self.ip, self.A, self.B, self.C, "cdv " + str(self.get_combo(operand)))
                 self.cdv(operand)                
 
     def get_combo(self, value):
