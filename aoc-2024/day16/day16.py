@@ -2,13 +2,14 @@ from aocd.models import Puzzle
 
 import cProfile
 from collections import defaultdict, namedtuple, Counter, deque
-from itertools import permutations, combinations, chain
+from itertools import permutations, combinations, chain, pairwise
 import re
 import math
 from pprint import pprint
 import numpy as np
 import sys
 from copy import deepcopy
+import networkx as nx
 
 np.set_printoptions(threshold=sys.maxsize)
 
@@ -23,19 +24,13 @@ moves = {
     '^': (0, -1),
     '<': (-1, 0),
 }
-directions = [
-    (0, 1),
-    (1, 0),
-    (0, -1),
-    (-1, 0),
-]
+
 def print_state(grid):
     for line in np.swapaxes(grid, 0, 1):
         print(''.join(line))
     print()
 
-def get_neighbors(pos, grid):
-    """
+def get_edges(pos, facing, grid):
     facing_idx = moves_ordered.index(facing)
     l_facing = moves_ordered[facing_idx - 3]
     r_facing = moves_ordered[facing_idx - 1]
@@ -47,56 +42,52 @@ def get_neighbors(pos, grid):
     back =  Point(pos.x + moves[b_facing][0], pos.y + moves[b_facing][1])
 
     return [
-            (fwd, facing),
-            (left, l_facing),
-            (right, r_facing),
-            (back, b_facing),
+            ((pos, facing), (fwd, facing), 1 if grid[fwd] in ".E" else sys.maxsize),
+            ((pos, facing), (left, l_facing), 1001 if grid[left] in ".E" else sys.maxsize),
+            ((pos, facing), (right, r_facing), 1001 if grid[right] in ".E" else sys.maxsize),
+            ((pos, facing), (back, b_facing), 2001 if grid[back] in ".E" else sys.maxsize),
     ]
-    """
 
-    return [Point(pos.x + d[0], pos.y + d[1]) for d in directions]
+def generate_graph(grid):
+    graph = nx.Graph()
 
+    for x in range(len(grid)):
+        for y in range(len(grid[0])):
+            if grid[x, y] in '#E':
+                continue
+            pos = Point(x, y)
+            for m in moves_ordered:
+                graph.add_weighted_edges_from(get_edges(pos, m, grid))
 
-def score_paths(grid, path):
-    tmp = grid.copy()
-
-    for pos in path:
-        tmp[pos] = 'X'
-    
-    #print_state(tmp)
-
-def part_one(grid):
-    print_state(grid)
-    score = 0
     start = np.where(grid == 'S')
     start = Point(int(start[0][0]), int(start[1][0]))
-    facing = '>'
-    visited = set()
-    
-    path = (start,)
-    stack = [path]
-    complete_paths = []
+    graph.add_edge("start", (start, '>'), weight=0)
 
-    while stack:
-        path = stack.pop()
-        pos = path[-1]
+    end = np.where(grid == 'E')
+    end = Point(int(end[0][0]), int(end[1][0]))
+    graph.add_edge((end, '^'), "end", weight=0)
+    graph.add_edge((end, '>'), "end", weight=0)
+    graph.add_edge((end, 'v'), "end", weight=0)
+    graph.add_edge((end, '<'), "end", weight=0)
 
-        if grid[pos] == 'E':
-            print("wah")
-            complete_paths.append(path)
-            continue
+    return graph
 
-        for n in get_neighbors(pos, grid):
-            if n not in path and grid[n] in ".E":
-                stack.append(path + (n,))
-
-    for path in complete_paths:
-        score_paths(grid, path)
-
-    print(len(complete_paths))
+def part_one(grid):
+    graph = generate_graph(grid)
+    path = nx.single_source_dijkstra(graph, "start", "end", weight="weight")
+    return path[0]
 
 def part_two(_input):
-    pass
+    graph = generate_graph(grid)
+    paths = nx.all_shortest_paths(graph, "start", "end", weight="weight")
+
+    seen = set()
+    for path in paths:
+        for node in path:
+            if node not in ["start", "end"]:
+                seen.add(node[0])
+ 
+    return len(seen)
 
 
 if __name__ == '__main__':
