@@ -16,9 +16,6 @@ DAY = 1
 
 
 def part_one(_input):
-    dial = deque(range(100))
-    dial.rotate(50)
-
     ret = 0
     for step in _input:
         delta = int(step[1:])
