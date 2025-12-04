@@ -16,10 +16,13 @@ class CleanCmd(Command):
         os.system('find . -name "*.pyc" -delete')
 
 setup(
-    name='advent_machine',
+    name='advent_lib',
     version='0.0.1',
     author='Nigel Butt',
     packages=find_packages(exclude=('test')),
     test_suite='test',
-    cmdclass={'clean': CleanCmd}
+    cmdclass={'clean': CleanCmd},
+    install_requires=[
+        "numpy"
+    ]
 )
