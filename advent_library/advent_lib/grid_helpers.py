@@ -1,5 +1,7 @@
 
 from collections import namedtuple, defaultdict
+import os
+
 import numpy as np
 
 BasePoint = namedtuple("Point", ['x', 'y']) 
@@ -48,3 +50,12 @@ def parse_text_to_ndarray(_input: list) -> np.ndarray:
     grid = np.swapaxes(grid, 0, 1)
 
     return grid
+
+def print_grid(grid: np.ndarray, preclear=False) -> None:
+    if preclear:
+        os.system('cls' if os.name == 'nt' else 'clear')
+    out = ""
+    for x in np.swapaxes(grid, 0, 1):
+        out += ''.join(x) + "\n"
+
+    print(out)
