@@ -28,14 +28,14 @@ def part_one(_input):
 def part_two(_input):
     numbers = parse_text_to_ndarray(_input[:-1])
     operators = _input[-1]
-
+    print(len(operators))
     operands = []
     acc = 0
     for i in range(len(numbers) - 1, -1, -1):
         digits = ''.join(numbers[i])
         if all(d == ' ' for d in digits):
             continue
-        operands.append(digits)
+        operands.append(digits.lstrip('0'))
 
         if operators[i] != ' ':
             acc += eval(operators[i].join(operands))
@@ -47,10 +47,10 @@ if __name__ == '__main__':
     puzzle = Puzzle(year=YEAR, day=DAY)
     _input = puzzle.input_data.split('\n')
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    #_input = [line[:-1] for line in open(os.path.join(dir_path, 'bigboy.txt')).readlines()]
+    _input = [line[:-1] for line in open(os.path.join(dir_path, 'bigboy.txt')).readlines()]
 
-    print(part_one(_input))
-    print(part_two(_input))
+    #print(part_one(_input))
+    #print(part_two(_input))
 
-    #cProfile.run('print(part_one(_input))')
-    #cProfile.run('print(part_two(_input))')
+    cProfile.run('print(part_one(_input))')
+    cProfile.run('print(part_two(_input))')
