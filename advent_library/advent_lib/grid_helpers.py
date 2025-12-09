@@ -3,8 +3,11 @@ from collections import namedtuple, defaultdict
 import os
 
 import numpy as np
-
+from scipy.spatial.distance import cdist
+import math
+from functools import cache
 BasePoint = namedtuple("Point", ['x', 'y']) 
+BasePoint3D = namedtuple("Point", ['x', 'y', 'z']) 
 
 class Point(BasePoint):
 
@@ -16,6 +19,26 @@ class Point(BasePoint):
 
     def isin(self, grid: np.ndarray) -> bool:
         return 0 <= self.x < len(grid) and 0 <= self.y < len(grid[0])
+
+class Point3D(BasePoint3D):
+
+    def __add__(self, p: Point3D) -> Point3D:
+        if not isinstance(p, Point3D):
+            raise ValueError(f"Expected righthand operand of type 'Point3D', got '{type(p)}'")
+
+        return Point3D(self.x + p.x, self.y + p.y, self.z + p.z)
+
+    def isin(self, grid: np.ndarray) -> bool:
+        return 0 <= self.x < len(grid) and 0 <= self.y < len(grid[0]) and 0 <= self.z < len(grid[0][0]) 
+
+    @cache
+    def distance(self, p):
+        xpart = math.pow(abs(self.x - p.x), 2)
+        ypart = math.pow(abs(self.y - p.y), 2)
+        zpart = math.pow(abs(self.z - p.z), 2)
+
+        return math.sqrt(xpart + ypart + zpart)
+
 
 DIRECTIONS = [
     Point(0, -1), # N
